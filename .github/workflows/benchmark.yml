@@ -24,7 +24,7 @@ jobs:
           pip install .[benchmark]
       - name: Run benchmarks
         run: |
-          pytest benchmarks/*.py --benchmark-json benchmarks/output.json
+          pytest benchmarks/*.py --benchmark-json benchmarks/output.json --benchmark-time-unit=second
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
         with:
@@ -38,3 +38,4 @@ jobs:
           alert-threshold: '200%'
           comment-on-alert: false
           fail-on-alert: true
+          time-unit: second
