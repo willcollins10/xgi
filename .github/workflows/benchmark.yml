@@ -1,3 +1,4 @@
+
 name: Benchmark XGI
 on:
   push:
@@ -25,12 +26,12 @@ jobs:
           pip install .[benchmark]
       - name: Run benchmarks
         run: |
-          echo "Current branch is: ${{ github.ref_name }}"
-          pytest benchmarks/*.py --benchmark-json benchmarks/output.json --benchmark-time-unit=s --benchmark-columns=mean
+          echo "Running benchmarks from branch: ${GITHUB_REF#refs/heads/}"
+          pytest benchmarks/*.py --benchmark-json benchmarks/output.json --benchmark-time-unit=s
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
         with:
-          name: "Python Benchmark (${{ github.ref_name }})"
+          name: "Python Benchmark (${GITHUB_REF#refs/heads/})"
           tool: 'pytest'
           output-file-path: benchmarks/output.json
           # Use personal access token instead of GITHUB_TOKEN due to https://github.community/t/github-action-not-triggering-gh-pages-upon-push/16096
@@ -40,4 +41,4 @@ jobs:
           alert-threshold: '200%'
           comment-on-alert: false
           fail-on-alert: true
-          value-unit: second
+          time-unit: second
