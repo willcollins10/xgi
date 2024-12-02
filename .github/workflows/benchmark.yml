@@ -31,7 +31,7 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: "Python Benchmark (${{ github.ref_name }})"
-          tool: 'customSmallerIsBetter'
+          tool: 'pytest'
           output-file-path: benchmarks/output.json
           # Use personal access token instead of GITHUB_TOKEN due to https://github.community/t/github-action-not-triggering-gh-pages-upon-push/16096
           github-token: ${{ secrets.GH_PAGES_TOKEN }}
