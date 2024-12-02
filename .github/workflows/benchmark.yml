@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - test-benchmark-units
   workflow_dispatch:
 
 permissions:
