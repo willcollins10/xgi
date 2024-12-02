@@ -26,12 +26,12 @@ jobs:
       - name: Run benchmarks
         run: |
           echo "Current branch is: ${{ github.ref_name }}"
-          pytest benchmarks/*.py --benchmark-json benchmarks/output.json --benchmark-time-unit=s
+          pytest benchmarks/*.py --benchmark-json output.json --benchmark-time-unit=s --benchmark-only --benchmark-columns=mean
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
         with:
           name: "Python Benchmark (${{ github.ref_name }})"
-          tool: 'pytest'
+          tool: 'customSmallerIsBetter'
           output-file-path: benchmarks/output.json
           # Use personal access token instead of GITHUB_TOKEN due to https://github.community/t/github-action-not-triggering-gh-pages-upon-push/16096
           github-token: ${{ secrets.GH_PAGES_TOKEN }}
@@ -40,4 +40,4 @@ jobs:
           alert-threshold: '200%'
           comment-on-alert: false
           fail-on-alert: true
-          time-unit: second
+          value-unit: second
