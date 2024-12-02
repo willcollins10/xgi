@@ -26,7 +26,7 @@ jobs:
       - name: Run benchmarks
         run: |
           echo "Current branch is: ${{ github.ref_name }}"
-          pytest benchmarks/*.py --benchmark-json output.json --benchmark-time-unit=s --benchmark-only --benchmark-columns=mean
+          pytest benchmarks/*.py --benchmark-json output.json --benchmark-time-unit=s --benchmark-columns=mean
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
         with:
