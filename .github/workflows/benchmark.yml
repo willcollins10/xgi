@@ -27,7 +27,7 @@ jobs:
       - name: Run benchmarks
         run: |
           echo "Running benchmarks from branch: ${GITHUB_REF#refs/heads/}"
-          pytest benchmarks/*.py --benchmark-json benchmarks/output.json --benchmark-time-unit=s
+          pytest benchmarks/*.py --benchmark-json benchmarks/output.json 
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
         with:
@@ -41,4 +41,4 @@ jobs:
           alert-threshold: '200%'
           comment-on-alert: false
           fail-on-alert: true
-          time-unit: second
+          
