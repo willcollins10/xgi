@@ -19,6 +19,7 @@ def test_simple_benchmark(benchmark):
 
     benchmark.pedantic(run_benchmark, setup=setup, rounds=rounds)
 
+
 def test_construct_from_edgelist(benchmark):
     def setup():
         H = xgi.read_hif(fname)
