@@ -187,7 +187,12 @@ class IDStat:
             A two-column table with "bin_center" and "value" columns,
             where "value" is a count or a probability. If `bin_edges`
             is True, outputs two additional columns, `bin_lo` and `bin_hi`,
-            which outputs the left and right bin edges respectively.
+            which outputs the left and right bin edges respectively. 
+
+            The DataFrame includes the following attributes:
+                - attrs['xlabel']: Label for x-axis
+            - attrs['ylabel']: 'Count' or 'Probability' based on density parameter
+            - attrs['title']: Plot title
 
         Notes
         -----
@@ -199,7 +204,19 @@ class IDStat:
         if isinstance(bins, int) and len(set(self.aslist())) == 1:
             bins = 1
 
-        return hist(self.asnumpy(), bins, bin_edges, density, log_binning)
+        # My modifications below
+
+        # Get the histogram Dataframe
+        df = hist(self.asnumpy(), bins, bin_edges, density, log_binning)
+
+        # Add metadata attributes
+        df.attrs["xlabel"] = "Value"
+        df.attrs["ylabel"] = "Probability" if density else "Count"
+        df.attrs["title"] = "Histogram"
+
+        return df
+
+        # return hist(self.asnumpy(), bins, bin_edges, density, log_binning)
 
     def max(self):
         """The maximum value of this stat."""
