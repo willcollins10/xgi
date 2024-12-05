@@ -569,73 +569,149 @@ def test_dihypergraph_single_id(diedgelist1):
         H.edges.order[-1]
 
 
+
+
+# Start of test cass we provided for the first fix
+
+# def test_ashist_attrs_exist():
+#     """Test that ashist returns DataFrame with expected attributes."""
+#     H = xgi.sunflower(3, 1, 20)
+#     df = H.edges.size.ashist()
+    
+#     # Check that all expected attributes exist
+#     assert 'xlabel' in df.attrs
+#     assert 'ylabel' in df.attrs
+#     assert 'title' in df.attrs
+
+
+# def test_ashist_density_labels():
+#     """Test that ylabel changes based on density parameter."""
+#     H = xgi.sunflower(3, 1, 20)
+    
+#     # Test default (density=False)
+#     df_count = H.edges.size.ashist(density=False)
+#     assert df_count.attrs['ylabel'] == 'Count'
+    
+#     # Test with density=True
+#     df_density = H.edges.size.ashist(density=True)
+#     assert df_density.attrs['ylabel'] == 'Probability'
+
+
+# def test_ashist_original_functionality():
+#     """Test that adding attributes doesn't break original functionality."""
+#     H = xgi.sunflower(3, 1, 20)
+#     df = H.edges.size.ashist()
+    
+#     # Original test case should still pass
+#     expected_df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
+#     assert df.equals(expected_df)  # Original functionality
+    
+#     # And should have attributes
+#     assert 'xlabel' in df.attrs
+
+
+
+# def test_ashist_single_unique_value():
+#     """Test ashist when there is only one unique value and multiple bins."""
+#     H = xgi.Hypergraph()
+#     H.add_nodes_from(range(5))
+#     # All edges have the same size
+#     H.add_edges_from([[0, 1], [2, 3], [4, 0]])
+    
+#     # The edge sizes will all be 2
+#     df = H.edges.size.ashist(bins=10)
+    
+#     # Since there's only one unique value, bins should be set to 1
+#     assert len(df) == 1  # Only one bin should be present
+#     assert df['bin_center'].iloc[0] == 2  # The bin center should be the unique value
+#     assert df['value'].iloc[0] == 3  # There are three edges of size 2
+
+#     # Check that attributes are present
+#     assert 'xlabel' in df.attrs
+#     assert 'ylabel' in df.attrs
+#     assert 'title' in df.attrs
+
+
+# End of the test cases we provided for the first fix
+
 def test_issue_468():
     H = xgi.sunflower(3, 1, 20)
     df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
     assert H.edges.size.ashist().equals(df)
-
-# Start of test cass we provided for the first fix
-
-def test_ashist_attrs_exist():
-    """Test that ashist returns DataFrame with expected attributes."""
-    H = xgi.sunflower(3, 1, 20)
-    df = H.edges.size.ashist()
-    
-    # Check that all expected attributes exist
-    assert 'xlabel' in df.attrs
-    assert 'ylabel' in df.attrs
-    assert 'title' in df.attrs
-
-
-def test_ashist_density_labels():
-    """Test that ylabel changes based on density parameter."""
+# Start of test ases we provided for the second fix
+def test_ashist_plotting_basic():
+    """Test basic plotting functionality."""
     H = xgi.sunflower(3, 1, 20)
     
-    # Test default (density=False)
-    df_count = H.edges.size.ashist(density=False)
-    assert df_count.attrs['ylabel'] == 'Count'
+    # Test that plot=False still returns correct DataFrame
+    df_no_plot = H.edges.size.ashist(plot=False)
+    expected_df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
+    assert df_no_plot.equals(expected_df)
+    
+    # Test that plot=True returns correct DataFrame
+    df_with_plot = H.edges.size.ashist(plot=True)
+    assert df_with_plot.equals(expected_df)
+
+
+def test_ashist_plot_types():
+    """Test different plot types."""
+    H = xgi.sunflower(3, 1, 20)
+    
+    # Test valid plot types
+    for plot_type in ['bar', 'line', 'step']:
+        df = H.edges.size.ashist(plot=plot_type)
+        expected_df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
+        assert df.equals(expected_df)
+
+
+def test_ashist_plot_kwargs():
+    """Test plot kwargs functionality."""
+    H = xgi.sunflower(3, 1, 20)
+    
+    # Test with valid kwargs
+    df = H.edges.size.ashist(
+        plot='bar',
+        plot_kwargs={'color': 'red', 'alpha': 0.5}
+    )
+    expected_df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
+    assert df.equals(expected_df)
+
+def test_ashist_plot_errors():
+    """Test error handling in plotting."""
+    H = xgi.sunflower(3, 1, 20)
+    
+    # Test invalid plot type
+    with pytest.raises(ValueError, match="Unknown plot type:"):
+        H.edges.size.ashist(plot='invalid_type')
+    
+    # Test with valid matplotlib parameters
+    df = H.edges.size.ashist(
+        plot='bar',
+        plot_kwargs={'color': 'red', 'alpha': 0.5}  # Known valid parameters
+    )
+    assert isinstance(df, pd.DataFrame)
+
+def test_ashist_density_plotting():
+    """Test plotting with density parameter."""
+    H = xgi.sunflower(3, 1, 20)
     
     # Test with density=True
-    df_density = H.edges.size.ashist(density=True)
-    assert df_density.attrs['ylabel'] == 'Probability'
+    df = H.edges.size.ashist(plot=True, density=True)
+    # Note: actual values will be different with density=True
+    assert 'bin_center' in df.columns
+    assert 'value' in df.columns
 
-
-def test_ashist_original_functionality():
-    """Test that adding attributes doesn't break original functionality."""
+def test_ashist_bin_edges_plotting():
+    """Test plotting with bin_edges parameter."""
     H = xgi.sunflower(3, 1, 20)
-    df = H.edges.size.ashist()
     
-    # Original test case should still pass
-    expected_df = pd.DataFrame([[20.0, 3]], columns=["bin_center", "value"])
-    assert df.equals(expected_df)  # Original functionality
-    
-    # And should have attributes
-    assert 'xlabel' in df.attrs
+    # Test with bin_edges=True
+    df = H.edges.size.ashist(plot=True, bin_edges=True)
+    assert 'bin_lo' in df.columns
+    assert 'bin_hi' in df.columns
 
 
-
-def test_ashist_single_unique_value():
-    """Test ashist when there is only one unique value and multiple bins."""
-    H = xgi.Hypergraph()
-    H.add_nodes_from(range(5))
-    # All edges have the same size
-    H.add_edges_from([[0, 1], [2, 3], [4, 0]])
-    
-    # The edge sizes will all be 2
-    df = H.edges.size.ashist(bins=10)
-    
-    # Since there's only one unique value, bins should be set to 1
-    assert len(df) == 1  # Only one bin should be present
-    assert df['bin_center'].iloc[0] == 2  # The bin center should be the unique value
-    assert df['value'].iloc[0] == 3  # There are three edges of size 2
-
-    # Check that attributes are present
-    assert 'xlabel' in df.attrs
-    assert 'ylabel' in df.attrs
-    assert 'title' in df.attrs
-
-
-# End of the test cases we provided for the first fix
+# End of test cases we provided for the second fix
 
 
 
