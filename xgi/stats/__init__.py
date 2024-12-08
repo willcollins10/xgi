@@ -161,6 +161,8 @@ class IDStat:
 
         """
         return pd.Series(self._val, name=self.name)
+    
+    # === Implementation for Metadata Attributes Enhancement ===
 
     # def ashist(self, bins=10, bin_edges=False, density=False, log_binning=False):
     #     """Return the distribution of a numpy array.
@@ -180,14 +182,13 @@ class IDStat:
     #         Whether to bin the values with log-sized bins.
     #         By default, False.
 
-
     #     Returns
     #     -------
     #     Pandas DataFrame
     #         A two-column table with "bin_center" and "value" columns,
     #         where "value" is a count or a probability. If `bin_edges`
     #         is True, outputs two additional columns, `bin_lo` and `bin_hi`,
-    #         which outputs the left and right bin edges respectively. 
+    #         which outputs the left and right bin edges respectively.
 
     #         The DataFrame includes the following attributes:
     #             - attrs['xlabel']: Label for x-axis
@@ -217,7 +218,19 @@ class IDStat:
     #     return df
 
     #     # return hist(self.asnumpy(), bins, bin_edges, density, log_binning)
-    def ashist(self, bins=10, bin_edges=False, density=False, log_binning=False, plot=False, plot_kwargs=None):
+
+    # === End Implementation for Metadata Attributes Enhancement ===
+
+
+    def ashist(
+        self,
+        bins=10,
+        bin_edges=False,
+        density=False,
+        log_binning=False,
+        plot=False,
+        plot_kwargs=None,
+    ):
         """Return the distribution of a numpy array and optionally plot it.
 
         Parameters
@@ -263,37 +276,35 @@ class IDStat:
 
             # Set default plotting parameters
             plot_kwargs = plot_kwargs or {}
-            plot_type = 'bar' if plot is True else plot
+            plot_type = "bar" if plot is True else plot
 
             # Create plot
             fig, ax = plt.subplots()
-            
+
             # Plot based on type
-            if plot_type == 'bar':
-                ax.bar(df['bin_center'], df['value'], **plot_kwargs)
-            elif plot_type == 'line':
-                ax.plot(df['bin_center'], df['value'], **plot_kwargs)
-            elif plot_type == 'step':
-                ax.step(df['bin_center'], df['value'], where='mid', **plot_kwargs)
+            if plot_type == "bar":
+                ax.bar(df["bin_center"], df["value"], **plot_kwargs)
+            elif plot_type == "line":
+                ax.plot(df["bin_center"], df["value"], **plot_kwargs)
+            elif plot_type == "step":
+                ax.step(df["bin_center"], df["value"], where="mid", **plot_kwargs)
             else:
                 raise ValueError(f"Unknown plot type: {plot_type}")
 
             # Set labels
-            ax.set_xlabel('Value')
-            ax.set_ylabel('Count' if not density else 'Probability')
-            ax.set_title('Histogram')
+            ax.set_xlabel("Value")
+            ax.set_ylabel("Count" if not density else "Probability")
+            ax.set_title("Histogram")
 
             # Add bin edges if requested
             if bin_edges:
                 for _, row in df.iterrows():
-                    ax.axvline(row['bin_lo'], color='gray', linestyle='--', alpha=0.5)
-                    ax.axvline(row['bin_hi'], color='gray', linestyle='--', alpha=0.5)
+                    ax.axvline(row["bin_lo"], color="gray", linestyle="--", alpha=0.5)
+                    ax.axvline(row["bin_hi"], color="gray", linestyle="--", alpha=0.5)
 
             plt.show()
 
         return df
-    
-    
 
     def max(self):
         """The maximum value of this stat."""

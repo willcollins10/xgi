@@ -571,7 +571,7 @@ def test_dihypergraph_single_id(diedgelist1):
 
 
 
-# Start of test cass we provided for the first fix
+# === Unit Tests for Metadata Attributes Enhancement ===
 
 # def test_ashist_attrs_exist():
 #     """Test that ashist returns DataFrame with expected attributes."""
@@ -632,7 +632,7 @@ def test_dihypergraph_single_id(diedgelist1):
 #     assert 'title' in df.attrs
 
 
-# End of the test cases we provided for the first fix
+# === End Unit Tests for Metadata Attributes Enhancement ===
 
 def test_issue_468():
     H = xgi.sunflower(3, 1, 20)
@@ -711,7 +711,30 @@ def test_ashist_bin_edges_plotting():
     assert 'bin_hi' in df.columns
 
 
+
 # End of test cases we provided for the second fix
+
+# Start of edge case I provided for the second fix
+def test_ashist_single_unique_value():
+    """Test ashist when there is only one unique value and multiple bins."""
+    # Create a hypergraph with edges all of the same size
+    H = xgi.Hypergraph()
+    H.add_nodes_from(range(5))
+    # All edges have size 2
+    H.add_edges_from([[0, 1], [2, 3], [4, 0]])
+
+    # Call ashist with multiple bins
+    df = H.edges.size.ashist(bins=10, plot=False)  # plot=False to avoid plotting
+
+    # Assert that only one bin is created
+    assert len(df) == 1, "There should be only one bin when all values are identical."
+
+    # Assert that the bin center is equal to the unique value
+    assert df['bin_center'].iloc[0] == 2, "The bin center should be the unique value."
+
+    # Assert that the count is equal to the number of edges
+    assert df['value'].iloc[0] == 3, "The count should match the number of identical values."
+# End of edge case I provided for the second fix
 
 
 
